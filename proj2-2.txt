@@ -1,0 +1,45 @@
+Partner 1 Name: Poy Woo
+Partner 1 Login: cs61c-abg
+
+Partner 2 Name: Siddhanta Dange
+Partner 2 Login: cs61c-el
+    
+1. Run your code on a Sliding Puzzle of size 5x2 on clusters with 6 slaves and 12 slaves and on a Sliding Puzzle of size 4x3 on clusters with 12 slaves. How long does each take?
+
+5x2 (6 slaves) : 1:32.56elapsed 98%CPU = 92.56 s
+5x2 (12 slaves): 1:26.91elapsed 140%CPU = 86.91 s
+4x3 (12 slaves): 1:09:19elapsed 4%CPU = 4159 s
+
+2. What was the mean processing rate (in MB/s) of your code for 6 and 12 instances? You can approximate the total data size to be (output size of your file)
+
+24845750 bytes = 24.84575 MB
+3776456323 bytes = 3776.456323 MB
+
+5x2 (6 slaves) : 24.84575 MB / 92.56 s = 0.26842858686 MB/s
+5x2 (12 slaves): 24.84575 MB / 86.91 s = 0.28587907030 MB/s
+4x3 (12 slaves): 3776.456323 MB / 4159 s = 0.90802027482 MB/s
+
+3. What was the speedup for 12 instances relative to 6 instances for the 5x2 board? What do you conclude about how well Spark parallelizes your work? Is this a case of strong scaling or weak scaling? Why or why not?
+
+Speedup = (new -old)/old = (0.28587907030 - 0.26842858686)/ 0.26842858686 = 0.06500978023
+
+There was a speedup of 0.06500978023 MB/s in our case. In general, Spark parallelizes well but there should be very little speed difference between 6 and 12 slaves because the speedup of a program using multiple processors in parallel computing is limited by the time needed for the sequential fraction of the program, according to Amdahl's law. Also, there can be parallel slowdown occuring, in which parallelization of a parallel algorithm beyond a certain point causes the program to run slower. Notice how 6 slaves run in about 0.268 seconds and 12 slaves run in about 0.286 seconds. There are limits to parallelization. This is a case of strong scaling, in which problem size stays fixed but the number of processing elements are increased. Our puzzles were a fixed problem size - each puzzle has a fixed number of children and boards to operate on - and the number of processing elements in our clusters were increased.  
+
+4. What was the price per GB processed for each cluster size? (Recall that an extra-large instance costs $0.68 per hour, rounded up to the nearest hour.)
+
+Not including the master, so our sizes are just 6 and 12 rather than 7 and 13.
+Our 6 ran for 92.56 seconds so we round that up to 1 hr
+6 slaves : ($0.68 * 6 slaves * 1 hr)/ 0.0248 GB = $164.52
+
+Our 5x2 ran for 86.91 seconds = 1 hr, 4x3 ran for 1 hr 9 minutes = 2 hr; total of 3 hrs
+12 slaves: ($0.68 * 12 slaves * 3 hrs)/ (0.0248 + 3.77646) GB = $6.44
+
+With the master: 
+7 slaves: $191.94
+13 slaves: $6.98 
+
+5. How many dollars in EC2 credits did you use to complete this project? 
+We ran the 6 instances two times because we messed up so we counted 2 hours for that. Again, not including the master.
+(12 instances * $0.68 * 3 hrs) + (6 instances * $0.68 * 2 hrs) = $32.64
+With the master: 
+(13 instances * $0.68 * 3 hrs) + (7 instances * $0.68 * 2 hrs) = $36.04
